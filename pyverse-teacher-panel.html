@@ -1069,8 +1069,10 @@ function proceedToStep2() {
   renderPendingQuestions();
   renderSearchChips();
   lastSearchTopic = '';
-  document.getElementById('topic-search').value = '';
-  document.getElementById('search-result-msg').style.display = 'none';
+  const ts = document.getElementById('topic-search');
+  const srm = document.getElementById('search-result-msg');
+  if (ts) ts.value = '';
+  if (srm) srm.style.display = 'none';
 }
 
 // ═══════════════════════════════════════
@@ -1167,18 +1169,17 @@ async function triggerTopicSearch() {
   clearTimeout(searchDebounceTimer);
 
   // Hide panels, show spinner
-  ['ai-panel','manual-form','upload-panel'].forEach(id =>
-    document.getElementById(id).classList.add('hidden')
-  );
-  document.getElementById('search-spinner').style.display = 'block';
-  document.getElementById('search-go-btn').style.display = 'none';
+  ['ai-panel','manual-form','upload-panel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  const spinnerEl = document.getElementById('search-spinner');
+  const goBtnEl = document.getElementById('search-go-btn');
+  if (spinnerEl) spinnerEl.style.display = 'block';
+  if (goBtnEl) goBtnEl.style.display = 'none';
 
   const msgEl = document.getElementById('search-result-msg');
-  msgEl.style.display = 'block';
-  msgEl.style.background = 'rgba(240,165,0,0.06)';
-  msgEl.style.color = 'var(--accent)';
-  msgEl.style.border = '1px solid rgba(240,165,0,0.2)';
-  msgEl.textContent = `⚡ Generating questions for "${raw}"…`;
+  if (msgEl) { msgEl.style.display = 'block'; msgEl.style.background = 'rgba(240,165,0,0.06)'; msgEl.style.color = 'var(--accent)'; msgEl.style.border = '1px solid rgba(240,165,0,0.2)'; msgEl.textContent = `⚡ Generating questions for "${raw}"…`; }
 
   const subject = state.currentQuiz?.subject || 'Science';
   const chapter = state.currentQuiz?.chapter || '';
@@ -1239,11 +1240,7 @@ Rules:
     renderPendingQuestions();
 
     // Success message
-    msgEl.style.background = 'rgba(63,185,80,0.08)';
-    msgEl.style.color = 'var(--success)';
-    msgEl.style.border = '1px solid rgba(63,185,80,0.25)';
-    msgEl.textContent = `✅ ${questions.length} questions added for "${raw}"`;
-    setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+    if (msgEl) { msgEl.style.background = 'rgba(63,185,80,0.08)'; msgEl.style.color = 'var(--success)'; msgEl.style.border = '1px solid rgba(63,185,80,0.25)'; msgEl.textContent = `✅ ${questions.length} questions added for "${raw}"`; setTimeout(() => { msgEl.style.display = 'none'; }, 3000); }
 
     // Clear search bar for next topic
     document.getElementById('topic-search').value = '';
@@ -1251,15 +1248,14 @@ Rules:
 
   } catch(e) {
     console.error(e);
-    msgEl.style.background = 'rgba(248,81,73,0.08)';
-    msgEl.style.color = 'var(--danger)';
-    msgEl.style.border = '1px solid rgba(248,81,73,0.25)';
-    msgEl.textContent = '❌ Could not generate. Check connection or try again.';
+    if (msgEl) { msgEl.style.background = 'rgba(248,81,73,0.08)'; msgEl.style.color = 'var(--danger)'; msgEl.style.border = '1px solid rgba(248,81,73,0.25)'; msgEl.textContent = '❌ Could not generate. Check connection or try again.'; }
     lastSearchTopic = '';
   } finally {
-    document.getElementById('search-spinner').style.display = 'none';
-    document.getElementById('search-go-btn').style.display =
-      document.getElementById('topic-search').value.trim().length > 2 ? 'block' : 'none';
+    const sp2 = document.getElementById('search-spinner');
+    const gb2 = document.getElementById('search-go-btn');
+    const ts2 = document.getElementById('topic-search');
+    if (sp2) sp2.style.display = 'none';
+    if (gb2 && ts2) gb2.style.display = ts2.value.trim().length > 2 ? 'block' : 'none';
   }
 }
 
@@ -1398,7 +1394,7 @@ async function generateFromUpload() {
 
   // Show loading
   document.getElementById('upload-loading').style.display = 'block';
-  document.querySelector('#unified-upload-options button').style.display = 'none';
+  const uBtn = document.querySelector('#unified-upload-options button'); if(uBtn) uBtn.style.display = 'none';
 
   const statusEl = document.getElementById('upload-status-text');
   const statusMsgs = [
@@ -1502,7 +1498,7 @@ Rules:
   } finally {
     clearInterval(msgInterval);
     document.getElementById('upload-loading').style.display = 'none';
-    document.querySelector('#unified-upload-options button').style.display = 'block';
+    const uBtn2 = document.querySelector('#unified-upload-options button'); if(uBtn2) uBtn2.style.display = 'block';
   }
 }
 
@@ -1809,7 +1805,7 @@ function toast(msg, type='') {
 // ═══════════════════════════════════════
 // Check if Supabase key is configured
 window.addEventListener('load', () => {
-  if (SUPABASE_KEY === 'YOUR_ANON_KEY_HERE') {
+  if (SUPABASE_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaXlrY3J1dWlteHdmdWh5dXJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjU0NjEsImV4cCI6MjA4OTAwMTQ2MX0.b9MHArVE1jOPdOyTS8qEYh_d13mmKkSDJJ7A2Ou7L6g') {
     // Show config warning in PIN screen
     const note = document.createElement('div');
     note.className = 'config-note';
