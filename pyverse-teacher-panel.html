@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyVerse Academy — Teacher Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Hind:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d14;
+  --surface: #111520;
+  --surface2: #181e2e;
+  --surface3: #1e2638;
+  --border: #2a3350;
+  --accent: #f0a500;
+  --accent2: #56cba3;
+  --accent3: #e05c5c;
+  --text: #e8edf8;
+  --muted: #6b7a9e;
+  --muted2: #3d4a6a;
+  --success: #3fb950;
+  --danger: #f85149;
+  --live: #43e97b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Hind',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(240,165,0,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 80%, rgba(86,203,163,0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(17,21,32,0.8) 0%, transparent 100%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Grid pattern overlay ── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(42,51,80,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,51,80,0.3) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+  opacity:0.4;
+}
+
+.hidden{display:none!important;}
+
+/* ══════════ CARD ══════════ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:36px;
+  width:100%;
+  max-width:560px;
+  position:relative;z-index:1;
+  animation:fadeUp 0.4s ease;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+}
+.card.wide{max-width:860px;}
+.card.xwide{max-width:1100px;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ══════════ LOGO ══════════ */
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:28px;}
+.logo-emblem{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--accent),#c47d00);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
+  color:#000;flex-shrink:0;
+  box-shadow:0 0 20px rgba(240,165,0,0.3);
+}
+.logo-text h1{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;line-height:1.2;}
+.logo-text p{font-size:0.78rem;color:var(--muted);}
+.badge-teacher{
+  display:inline-block;
+  background:rgba(240,165,0,0.12);
+  color:var(--accent);
+  border:1px solid rgba(240,165,0,0.3);
+  border-radius:6px;
+  padding:2px 10px;font-size:0.72rem;font-weight:700;
+  letter-spacing:0.06em;margin-left:8px;vertical-align:middle;
+}
+
+/* ══════════ FORM ELEMENTS ══════════ */
+label{
+  display:block;font-size:0.75rem;font-weight:600;
+  color:var(--muted);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:0.08em;
+}
+input,select,textarea{
+  width:100%;padding:12px 14px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);
+  font-family:'Hind',sans-serif;font-size:0.95rem;
+  margin-bottom:16px;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(240,165,0,0.12);
+}
+select option{background:var(--surface2);}
+textarea{resize:vertical;min-height:80px;}
+
+/* ══════════ BUTTONS ══════════ */
+.btn{
+  padding:12px 22px;border-radius:10px;
+  font-family:'Rajdhani',sans-serif;font-size:1rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+  cursor:pointer;border:none;transition:all 0.2s;
+}
+.btn-primary{
+  background:var(--accent);color:#000;width:100%;
+  box-shadow:0 4px 20px rgba(240,165,0,0.3);
+}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-secondary{
+  background:var(--surface2);color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-green{
+  background:var(--accent2);color:#000;
+  box-shadow:0 4px 16px rgba(86,203,163,0.3);
+}
+.btn-green:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-danger{
+  background:rgba(248,81,73,0.12);color:var(--danger);
+  border:1px solid rgba(248,81,73,0.3);
+}
+.btn-danger:hover{background:rgba(248,81,73,0.2);}
+.btn-live{
+  background:linear-gradient(135deg,#43e97b,#38f9d7);
+  color:#000;font-size:1.05rem;
+  box-shadow:0 4px 24px rgba(67,233,123,0.4);
+  animation:livePulse 2s infinite;
+}
+.btn-live:hover{filter:brightness(1.1);transform:translateY(-2px);}
+@keyframes livePulse{
+  0%,100%{box-shadow:0 4px 24px rgba(67,233,123,0.4);}
+  50%{box-shadow:0 4px 36px rgba(67,233,123,0.7);}
+}
+.btn-sm{padding:7px 14px;font-size:0.82rem;}
+.btn-icon{width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+
+/* ══════════ PIN SCREEN ══════════ */
+.pin-dots{
+  display:flex;gap:14px;justify-content:center;
+  margin:24px 0 8px;
+}
+.pin-dot{
+  width:16px;height:16px;border-radius:50%;
+  background:var(--surface3);
+  border:2px solid var(--border);
+  transition:all 0.2s;
+}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(240,165,0,0.5);}
+.numpad{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-top:16px;
+}
+.numpad-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+  font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;
+  cursor:pointer;transition:all 0.15s;color:var(--text);
+  text-align:center;
+}
+.numpad-btn:hover{border-color:var(--accent);background:rgba(240,165,0,0.08);color:var(--accent);}
+.numpad-btn:active{transform:scale(0.95);}
+.numpad-btn.del{color:var(--danger);font-size:1rem;}
+.numpad-btn.empty{visibility:hidden;}
+.pin-error{
+  text-align:center;color:var(--danger);
+  font-size:0.85rem;margin-top:8px;
+  animation:shake 0.4s ease;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-8px);}
+  40%{transform:translateX(8px);}
+  60%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+}
+
+/* ══════════ DASHBOARD NAV ══════════ */
+.dash-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;flex-wrap:wrap;gap:10px;
+}
+.dash-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.dash-tab{
+  padding:8px 16px;border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface2);color:var(--muted);
+  cursor:pointer;font-size:0.82rem;font-weight:600;
+  transition:all 0.2s;
+}
+.dash-tab.active{
+  background:rgba(240,165,0,0.12);
+  border-color:var(--accent);color:var(--accent);
+}
+.dash-tab:hover:not(.active){border-color:var(--accent);color:var(--text);}
+
+/* ══════════ PLANNER ══════════ */
+.planner-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:16px;
+}
+@media(max-width:540px){.planner-grid{grid-template-columns:1fr;}}
+.planner-grid label{margin-top:0;}
+
+.step-indicator{
+  display:flex;gap:0;margin-bottom:24px;
+}
+.step{
+  flex:1;text-align:center;
+  padding:10px 8px;
+  font-size:0.75rem;font-weight:700;
+  color:var(--muted2);
+  border-bottom:2px solid var(--border);
+  transition:all 0.3s;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+.step.active{color:var(--accent);border-color:var(--accent);}
+.step.done{color:var(--accent2);border-color:var(--accent2);}
+
+/* ══════════ QUESTION CARDS ══════════ */
+.q-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:14px;padding:16px;
+  margin-bottom:12px;
+  transition:border-color 0.2s;
+  position:relative;
+}
+.q-card:hover{border-color:var(--muted2);}
+.q-card .q-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;color:var(--accent);
+  margin-bottom:6px;
+}
+.q-card .q-text{font-size:0.93rem;font-weight:500;margin-bottom:10px;line-height:1.5;}
+.q-card .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.q-opt{
+  font-size:0.8rem;padding:6px 10px;
+  background:var(--surface3);border:1px solid var(--border);
+  border-radius:6px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.q-opt.correct{border-color:var(--success);color:var(--success);background:rgba(63,185,80,0.08);}
+.q-opt .opt-badge{
+  width:18px;height:18px;border-radius:4px;
+  background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.68rem;font-weight:700;flex-shrink:0;
+}
+.q-opt.correct .opt-badge{background:var(--success);color:#000;}
+.q-card-actions{
+  position:absolute;top:12px;right:12px;
+  display:flex;gap:6px;
+}
+
+/* ══════════ ADD QUESTION FORM ══════════ */
+.add-q-form{
+  background:var(--surface2);
+  border:1px dashed var(--border);
+  border-radius:14px;padding:20px;
+  margin-bottom:16px;
+  animation:fadeUp 0.3s ease;
+}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+@media(max-width:540px){.opts-grid{grid-template-columns:1fr;}}
+.opt-input-row{display:flex;gap:8px;align-items:center;}
+.opt-input-row input{margin-bottom:0;flex:1;}
+.opt-radio-label{
+  display:flex;align-items:center;gap:6px;
+  font-size:0.78rem;color:var(--muted);
+  cursor:pointer;white-space:nowrap;
+}
+.opt-radio-label input[type=radio]{width:auto;margin:0;padding:0;}
+
+/* ══════════ STATUS BADGES ══════════ */
+.status-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:20px;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.status-draft{background:rgba(107,122,158,0.15);color:var(--muted);}
+.status-live{
+  background:rgba(67,233,123,0.12);color:var(--live);
+  border:1px solid rgba(67,233,123,0.3);
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--live);
+  animation:blink 1.2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.status-ended{background:rgba(248,81,73,0.12);color:var(--danger);}
+
+/* ══════════ QUIZ LIST ══════════ */
+.quiz-list-item{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:14px;padding:16px 18px;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:14px;
+  transition:border-color 0.2s;
+  cursor:pointer;
+}
+.quiz-list-item:hover{border-color:var(--muted2);}
+.qli-info{flex:1;}
+.qli-title{font-size:0.95rem;font-weight:600;margin-bottom:3px;}
+.qli-meta{font-size:0.77rem;color:var(--muted);}
+.qli-actions{display:flex;gap:6px;}
+
+/* ══════════ AI LOADER ══════════ */
+.ai-loader{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:32px;gap:14px;
+}
+.ai-spinner{
+  width:44px;height:44px;
+  border:3px solid var(--surface3);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-loader-text{
+  font-size:0.88rem;color:var(--muted);
+  text-align:center;line-height:1.6;
+}
+
+/* ══════════ TOAST ══════════ */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:12px 24px;
+  font-size:0.88rem;color:var(--text);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  z-index:999;transition:transform 0.3s ease;
+  white-space:nowrap;
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{border-color:var(--success);color:var(--success);}
+#toast.error{border-color:var(--danger);color:var(--danger);}
+
+/* ══════════ LIVE QUIZ BANNER ══════════ */
+.live-banner{
+  background:rgba(67,233,123,0.08);
+  border:1px solid rgba(67,233,123,0.25);
+  border-radius:14px;padding:18px 20px;
+  margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;
+}
+.live-banner-left{display:flex;align-items:center;gap:12px;}
+.live-banner-icon{font-size:1.8rem;}
+.live-banner-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--live);}
+.live-banner-meta{font-size:0.78rem;color:var(--muted);}
+
+/* ══════════ STATS ROW ══════════ */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:20px;
+}
+.stat-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:14px;text-align:center;
+}
+.stat-num{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;}
+.stat-lbl{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;}
+
+/* ══════════ DIVIDER ══════════ */
+.divider{
+  border:none;border-top:1px solid var(--border);
+  margin:20px 0;
+}
+
+/* ══════════ SECTION TITLE ══════════ */
+.section-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:1.4rem;font-weight:700;
+  margin-bottom:4px;
+}
+.section-sub{font-size:0.83rem;color:var(--muted);margin-bottom:20px;}
+
+/* ══════════ SCROLL ══════════ */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ══════════ RESPONSIVE ══════════ */
+@media(max-width:540px){
+  body{padding:10px;align-items:flex-start;padding-top:16px;}
+  .card{padding:18px 14px;border-radius:14px;}
+  .numpad-btn{padding:14px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+}
+
+/* ══════════ EMPTY STATE ══════════ */
+.empty-state{
+  text-align:center;padding:40px 20px;
+  color:var(--muted);
+}
+.empty-icon{font-size:2.5rem;margin-bottom:10px;}
+.empty-text{font-size:0.88rem;line-height:1.6;}
+
+/* ══════════ CONFIG NOTE ══════════ */
+.config-note{
+  background:rgba(240,165,0,0.06);
+  border:1px solid rgba(240,165,0,0.2);
+  border-radius:10px;padding:12px 16px;
+  font-size:0.8rem;color:var(--muted);
+  margin-bottom:20px;line-height:1.6;
+}
+.config-note strong{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     SCREEN 1: PIN LOGIN
+═══════════════════════════════════ -->
+<div id="screen-pin" class="card">
+  <div class="logo-row">
+    <div class="logo-emblem">PV</div>
+    <div class="logo-text">
+      <h1>PyVerse Academy <span class="badge-teacher">TEACHER</span></h1>
+      <p>Secure Teacher Panel</p>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <div style="font-size:0.85rem;color:var(--muted);margin-bottom:4px;">Enter your 4-digit PIN</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="dot-0"></div>
+      <div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div>
+      <div class="pin-dot" id="dot-3"></div>
+    </div>
+    <div id="pin-error" class="pin-error hidden">❌ Wrong PIN. Try again.</div>
+  </div>
+
+  <div class="numpad">
+    <button class="numpad-btn" onclick="pinPress('1')">1</button>
+    <button class="numpad-btn" onclick="pinPress('2')">2</button>
+    <button class="numpad-btn" onclick="pinPress('3')">3</button>
+    <button class="numpad-btn" onclick="pinPress('4')">4</button>
+    <button class="numpad-btn" onclick="pinPress('5')">5</button>
+    <button class="numpad-btn" onclick="pinPress('6')">6</button>
+    <button class="numpad-btn" onclick="pinPress('7')">7</button>
+    <button class="numpad-btn" onclick="pinPress('8')">8</button>
+    <button class="numpad-btn" onclick="pinPress('9')">9</button>
+    <button class="numpad-btn empty"></button>
+    <button class="numpad-btn" onclick="pinPress('0')">0</button>
+    <button class="numpad-btn del" onclick="pinDelete()">⌫</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SCREEN 2: MAIN DASHBOARD
+═══════════════════════════════════ -->
+<div id="screen-dashboard" class="card wide hidden">
+  <div class="dash-nav">
+    <div class="logo-row" style="margin-bottom:0;">
+      <div class="logo-emblem" style="width:40px;height:40px;font-size:16px;">PV</div>
+      <div class="logo-text">
+        <h1 style="font-size:1rem;">Teacher Panel <span class="badge-teacher">LIVE</span></h1>
+        <p id="dash-date" style="font-size:0.73rem;"></p>
+      </div>
+    </div>
+    <div class="dash-tabs">
+      <button class="dash-tab active" onclick="switchTab('quizzes',this)">📋 Quizzes</button>
+      <button class="dash-tab" onclick="switchTab('create',this)">➕ New Quiz</button>
+      <button class="dash-tab" onclick="switchTab('classes',this)">🏫 Classes</button>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="logout()">🔒 Lock</button>
+  </div>
+
+  <!-- Live Quiz Banner (shown when a quiz is live) -->
+  <div id="live-banner" class="live-banner hidden">
+    <div class="live-banner-left">
+      <div class="live-banner-icon">🚀</div>
+      <div>
+        <div class="live-banner-title">
+          <span class="live-dot" style="display:inline-block;margin-right:6px;"></span>
+          QUIZ IS LIVE
+        </div>
+        <div class="live-banner-meta" id="live-banner-meta">Loading...</div>
+      </div>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="endLiveQuiz()">⏹ End Quiz</button>
+  </div>
+
+  <!-- ── TAB: QUIZZES ── -->
+  <div id="tab-quizzes">
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">Total Quizzes</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--live)" id="stat-live">—</div><div class="stat-lbl">Live Now</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--accent)" id="stat-qs">—</div><div class="stat-lbl">Questions</div></div>
+    </div>
+    <div class="section-title">Your Quizzes</div>
+    <div class="section-sub">Topic-based quizzes organized by class. Click any quiz to manage it.</div>
+    <div id="quiz-list-container">
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-text">No quizzes yet.<br>Create your first quiz from "New Quiz" tab.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: CREATE QUIZ ── -->
+  <div id="tab-create" class="hidden">
+    <div class="section-title">Create New Quiz</div>
+    <div class="section-sub">Set up your topic, add questions manually or via AI, then go live!</div>
+
+    <!-- Step indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step-1">1 · Setup</div>
+      <div class="step" id="step-2">2 · Questions</div>
+      <div class="step" id="step-3">3 · Go Live</div>
+    </div>
+
+    <!-- STEP 1: PLANNER -->
+    <div id="create-step-1">
+      <div class="planner-grid">
+        <div>
+          <label>Class</label>
+          <select id="new-class" onchange="loadClassSubjects()">
+            <option value="">-- Select Class --</option>
+          </select>
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="new-subject">
+            <option value="">-- Select Subject --</option>
+          </select>
+        </div>
+      </div>
+      <label>Chapter Name</label>
+      <input type="text" id="new-chapter" placeholder="e.g. Ch 6 — Life Processes">
+      <label>Topic (today's class topic)</label>
+      <input type="text" id="new-topic" placeholder="e.g. Photosynthesis">
+      <button class="btn btn-primary" onclick="proceedToStep2()">Next: Add Questions →</button>
+    </div>
+
+    <!-- STEP 2: QUESTIONS -->
+    <div id="create-step-2" class="hidden">
+      <!-- STEP 2 HEADER -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:0.88rem;font-weight:600;" id="step2-title">Topic Quiz</div>
+          <div style="font-size:0.77rem;color:var(--muted);" id="step2-meta"></div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="showAddForm()">✏️ Add Manual</button>
+      </div>
+
+      <!-- ⚡ UNIFIED AI INPUT BAR (ChatGPT style) -->
+      <div style="
+        background:var(--surface2);
+        border:1.5px solid var(--border);
+        border-radius:16px;
+        padding:12px 14px;
+        margin-bottom:14px;
+        transition:border-color 0.2s,box-shadow 0.2s;
+      " id="unified-bar"
+        onfocusin="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(240,165,0,0.1)'"
+        onfocusout="this.style.borderColor='var(--border)';this.style.boxShadow='none'"
+      >
+        <!-- Text input row -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:1.1rem;flex-shrink:0;">⚡</span>
+          <input
+            type="text"
+            id="topic-search"
+            placeholder="Type a topic to instantly generate questions… e.g. Photosynthesis, Newton's Laws"
+            style="flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Hind',sans-serif;font-size:0.9rem;margin:0;padding:0;"
+            oninput="onTopicSearchInput(this.value)"
+            onkeydown="if(event.key==='Enter') triggerTopicSearch()"
+          >
+          <div id="search-spinner" style="display:none;width:18px;height:18px;border:2px solid var(--surface3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;"></div>
+        </div>
+
+        <!-- Bottom action row -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <!-- Upload button (left side) -->
+          <button onclick="document.getElementById('file-input-unified').click()"
+            style="display:flex;align-items:center;gap:6px;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--muted);cursor:pointer;font-size:0.8rem;font-family:'Hind',sans-serif;transition:all 0.2s;"
+            onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"
+            title="Upload PDF or Image">
+            <span style="font-size:1rem;">➕</span> PDF / Image
+          </button>
+          <input type="file" id="file-input-unified" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleFileSelectUnified(this)">
+
+          <!-- File name shown after upload -->
+          <div id="unified-file-badge" style="display:none;align-items:center;gap:6px;background:rgba(86,203,163,0.1);border:1px solid rgba(86,203,163,0.3);border-radius:8px;padding:4px 10px;font-size:0.78rem;color:var(--accent2);">
+            <span id="unified-file-name">file.pdf</span>
+            <span onclick="clearUnifiedFile()" style="cursor:pointer;color:var(--danger);font-weight:700;">✕</span>
+          </div>
+
+          <!-- Quick chips -->
+          <div id="search-chips" style="display:flex;gap:5px;flex-wrap:wrap;flex:1;"></div>
+
+          <!-- Generate button (right side) -->
+          <button id="search-go-btn"
+            onclick="triggerTopicSearch()"
+            style="display:none;background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 16px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;white-space:nowrap;margin-left:auto;transition:all 0.2s;"
+            onmouseover="this.style.filter='brightness(1.1)'"
+            onmouseout="this.style.filter='none'">
+            Generate ⚡
+          </button>
+        </div>
+
+        <!-- Upload options (shown after file selected) -->
+        <div id="unified-upload-options" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:0.72rem;">Questions</label>
+              <select id="upload-count" style="margin-bottom:0;">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.72rem;">Difficulty</label>
+              <select id="upload-difficulty" style="margin-bottom:0;">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:0.8rem;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--text);">
+              <input type="checkbox" id="qt-mcq" checked style="width:auto;margin:0;"> MCQ
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:0.8rem;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--text);">
+              <input type="checkbox" id="qt-ar" checked style="width:auto;margin:0;"> Assertion-Reason
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:0.8rem;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--text);">
+              <input type="checkbox" id="qt-tf" checked style="width:auto;margin:0;"> True/False
+            </label>
+          </div>
+          <button onclick="generateFromUpload()"
+            style="width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:10px;padding:10px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,0.3);">
+            🔍 Scan File & Generate Questions
+          </button>
+          <div id="upload-loading" style="display:none;text-align:center;padding:16px 0;color:var(--muted);font-size:0.85rem;">
+            <div style="width:24px;height:24px;border:2px solid var(--surface3);border-top-color:#a78bfa;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px;"></div>
+            Scanning your file...
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline result message -->
+      <div id="search-result-msg" style="display:none;font-size:0.78rem;margin-bottom:10px;padding:7px 12px;border-radius:8px;"></div>
+
+      <!-- Quick suggestion chips (shown separately when no file) -->
+
+
+            <!-- AI Generator Panel -->
+      <div id="ai-panel" class="add-q-form hidden">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--accent);margin-bottom:10px;">🤖 AI Question Generator</div>
+        <label>How many questions?</label>
+        <select id="ai-count" style="margin-bottom:12px;">
+          <option value="5">5 Questions</option>
+          <option value="8">8 Questions</option>
+          <option value="10" selected>10 Questions</option>
+        </select>
+        <label>Difficulty Level</label>
+        <select id="ai-difficulty" style="margin-bottom:12px;">
+          <option value="easy">Easy (Class 6-8)</option>
+          <option value="medium" selected>Medium (Class 9-10)</option>
+          <option value="hard">Hard (Class 11-12)</option>
+        </select>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="generateAIQuestions()">⚡ Generate Now</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('ai-panel').classList.add('hidden')">Cancel</button>
+        </div>
+        <div id="ai-loading" class="hidden">
+          <div class="ai-loader">
+            <div class="ai-spinner"></div>
+            <div class="ai-loader-text">AI is generating questions for<br><strong id="ai-topic-display" style="color:var(--accent);"></strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Add Form -->
+      <div id="manual-form" class="add-q-form hidden">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--accent2);margin-bottom:12px;">✏️ Add Question Manually</div>
+        <label>Question Text</label>
+        <textarea id="mq-text" placeholder="Enter your question here..."></textarea>
+        <label>Options (mark the correct one)</label>
+        <div class="opts-grid">
+          <div class="opt-input-row">
+            <label class="opt-radio-label"><input type="radio" name="correct-opt" value="0"> A</label>
+            <input type="text" id="mq-opt-0" placeholder="Option A">
+          </div>
+          <div class="opt-input-row">
+            <label class="opt-radio-label"><input type="radio" name="correct-opt" value="1"> B</label>
+            <input type="text" id="mq-opt-1" placeholder="Option B">
+          </div>
+          <div class="opt-input-row">
+            <label class="opt-radio-label"><input type="radio" name="correct-opt" value="2"> C</label>
+            <input type="text" id="mq-opt-2" placeholder="Option C">
+          </div>
+          <div class="opt-input-row">
+            <label class="opt-radio-label"><input type="radio" name="correct-opt" value="3"> D</label>
+            <input type="text" id="mq-opt-3" placeholder="Option D">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-green" style="flex:1;" onclick="addManualQuestion()">✅ Add Question</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('manual-form').classList.add('hidden')">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Question List -->
+      <div id="questions-preview"></div>
+
+      <div style="display:flex;gap:8px;margin-top:8px;" id="step2-nav">
+        <button class="btn btn-secondary" style="flex:0;" onclick="backToStep1()">← Back</button>
+        <button class="btn btn-primary" style="flex:1;" id="btn-proceed-step3" onclick="proceedToStep3()" disabled>Next: Go Live →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: GO LIVE -->
+    <div id="create-step-3" class="hidden">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:3rem;margin-bottom:10px;">🚀</div>
+        <div class="section-title" id="step3-title">Ready to Go Live!</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:24px;" id="step3-meta"></div>
+      </div>
+
+      <div class="stats-row" id="step3-stats">
+        <div class="stat-card"><div class="stat-num" style="color:var(--accent)" id="s3-class">—</div><div class="stat-lbl">Class</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--accent2)" id="s3-qs">—</div><div class="stat-lbl">Questions</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--live)" id="s3-subject">—</div><div class="stat-lbl">Subject</div></div>
+      </div>
+
+      <div class="config-note">
+        <strong>📱 How will students join?</strong><br>
+        Once the quiz is live, students open the <strong>Student Portal</strong> → enter their name + select class → the quiz loads automatically!
+      </div>
+
+      <button class="btn btn-live btn-sm" style="width:100%;padding:16px;" onclick="goLive()">
+        🚀 GO LIVE — Start Quiz Now!
+      </button>
+
+      <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;" onclick="backToStep2()">← Edit Questions</button>
+    </div>
+  </div>
+
+  <!-- ── TAB: CLASSES ── -->
+  <div id="tab-classes" class="hidden">
+    <div class="section-title">Manage Classes</div>
+    <div class="section-sub">These are your active classes. Students will select from these when joining.</div>
+    <div id="classes-list"></div>
+
+    <hr class="divider">
+    <div style="font-size:0.88rem;font-weight:600;margin-bottom:12px;">➕ Add New Class</div>
+    <div class="planner-grid">
+      <div>
+        <label>Class Name</label>
+        <input type="text" id="new-class-name" placeholder="e.g. Class 10">
+      </div>
+      <div>
+        <label>Subject</label>
+        <input type="text" id="new-class-subject" placeholder="e.g. Science">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addClass()">➕ Add Class</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SCREEN 3: QUIZ DETAIL
+═══════════════════════════════════ -->
+<div id="screen-quiz-detail" class="card wide hidden">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+    <button class="btn btn-secondary btn-sm" onclick="backToDashboard()">← Back</button>
+    <div style="flex:1;">
+      <div class="section-title" id="detail-title" style="margin-bottom:0;">Quiz Detail</div>
+      <div style="font-size:0.77rem;color:var(--muted);" id="detail-meta"></div>
+    </div>
+    <div id="detail-status"></div>
+  </div>
+
+  <div id="detail-live-actions" class="hidden">
+    <div class="live-banner" style="margin-bottom:16px;">
+      <div class="live-banner-left">
+        <div class="live-banner-icon">🔴</div>
+        <div>
+          <div class="live-banner-title"><span class="live-dot" style="display:inline-block;margin-right:6px;"></span>QUIZ IS LIVE</div>
+          <div class="live-banner-meta">Students can join now</div>
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="endLiveQuiz()">⏹ End</button>
+    </div>
+  </div>
+
+  <div id="detail-draft-actions" class="hidden" style="margin-bottom:16px;">
+    <button class="btn btn-live" style="width:100%;" onclick="makeQuizLive()">🚀 Make This Quiz Live</button>
+  </div>
+
+  <div id="detail-questions-list"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  SUPABASE CONFIG — apni values yahan dalo
+// ═══════════════════════════════════════
+const SUPABASE_URL = 'https://jciykcruuimxwfuhyurw.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaXlrY3J1dWlteHdmdWh5dXJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjU0NjEsImV4cCI6MjA4OTAwMTQ2MX0.b9MHArVE1jOPdOyTS8qEYh_d13mmKkSDJJ7A2Ou7L6g'; // ← Yahan apni eyJ... key paste karo // Settings > API Keys > Legacy anon key (eyJ...)
+const TEACHER_PIN  = '1234';
+
+// ═══════════════════════════════════════
+//  SUPABASE HELPERS
+// ═══════════════════════════════════════
+const sb = {
+  async get(table, query='') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    return r.json();
+  },
+  async post(table, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method:'POST',
+      headers: {
+        apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type':'application/json', Prefer:'return=representation'
+      },
+      body: JSON.stringify(body)
+    });
+    return r.json();
+  },
+  async patch(table, id, body) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method:'PATCH',
+      headers: {
+        apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type':'application/json', Prefer:'return=representation'
+      },
+      body: JSON.stringify(body)
+    });
+    return r.json();
+  },
+  async delete(table, id) {
+    await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method:'DELETE',
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+  }
+};
+
+// ═══════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════
+let state = {
+  classes: [],
+  quizzes: [],
+  currentQuiz: null,     // quiz being created
+  pendingQuestions: [],  // questions for new quiz
+  liveQuizId: null,
+  detailQuizId: null
+};
+
+// ═══════════════════════════════════════
+//  PIN LOGIN
+// ═══════════════════════════════════════
+let pinBuffer = '';
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('screen-pin').classList.contains('hidden')) return;
+  if (e.key >= '0' && e.key <= '9') pinPress(e.key);
+  if (e.key === 'Backspace') pinDelete();
+});
+
+function pinPress(d) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += d;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(checkPin, 200);
+}
+
+function pinDelete() {
+  pinBuffer = pinBuffer.slice(0,-1);
+  updatePinDots();
+  document.getElementById('pin-error').classList.add('hidden');
+}
+
+function updatePinDots() {
+  for(let i=0;i<4;i++) {
+    document.getElementById('dot-'+i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+function checkPin() {
+  if (pinBuffer === TEACHER_PIN) {
+    show('screen-dashboard');
+    loadDashboard();
+  } else {
+    document.getElementById('pin-error').classList.remove('hidden');
+    pinBuffer = '';
+    updatePinDots();
+    setTimeout(() => document.getElementById('pin-error').classList.add('hidden'), 2000);
+  }
+}
+
+function logout() {
+  pinBuffer = '';
+  updatePinDots();
+  show('screen-pin');
+}
+
+// ═══════════════════════════════════════
+//  SCREEN CONTROL
+// ═══════════════════════════════════════
+function show(id) {
+  ['screen-pin','screen-dashboard','screen-quiz-detail'].forEach(s => {
+    document.getElementById(s).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['quizzes','create','classes'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('hidden', t !== tab);
+  });
+  if(tab==='classes') loadClassesTab();
+}
+
+// ═══════════════════════════════════════
+//  DASHBOARD LOAD
+// ═══════════════════════════════════════
+async function loadDashboard() {
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
+  await loadClasses();
+  await loadQuizzes();
+  populateClassDropdown();
+}
+
+async function loadClasses() {
+  state.classes = await sb.get('classes','?order=name.asc');
+}
+
+async function loadQuizzes() {
+  state.quizzes = await sb.get('quizzes','?order=created_at.desc');
+  renderQuizList();
+  updateStats();
+  checkLiveQuiz();
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = state.quizzes.length;
+  const live = state.quizzes.filter(q=>q.is_live).length;
+  document.getElementById('stat-live').textContent = live;
+  // Count questions (we'd need a separate call, show — for now)
+  document.getElementById('stat-qs').textContent = '—';
+}
+
+function checkLiveQuiz() {
+  const live = state.quizzes.find(q=>q.is_live);
+  const banner = document.getElementById('live-banner');
+  if (live) {
+    state.liveQuizId = live.id;
+    const cls = state.classes.find(c=>c.id===live.class_id);
+    document.getElementById('live-banner-meta').textContent =
+      `${live.topic} · ${cls?.name||''} ${cls?.subject||''}`;
+    banner.classList.remove('hidden');
+  } else {
+    state.liveQuizId = null;
+    banner.classList.add('hidden');
+  }
+}
+
+function renderQuizList() {
+  const container = document.getElementById('quiz-list-container');
+  if (!state.quizzes.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No quizzes yet.<br>Create your first quiz from "New Quiz" tab.</div></div>`;
+    return;
+  }
+  container.innerHTML = state.quizzes.map(q => {
+    const cls = state.classes.find(c=>c.id===q.class_id);
+    const statusHtml = q.is_live
+      ? `<span class="status-badge status-live"><span class="live-dot"></span>LIVE</span>`
+      : `<span class="status-badge status-draft">DRAFT</span>`;
+    const date = new Date(q.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    return `
+    <div class="quiz-list-item" onclick="openQuizDetail('${q.id}')">
+      <div style="font-size:1.4rem;">${q.is_live?'🔴':'📋'}</div>
+      <div class="qli-info">
+        <div class="qli-title">${q.topic}</div>
+        <div class="qli-meta">${cls?.name||'Unknown'} · ${cls?.subject||''} · ${q.chapter} · ${date}</div>
+      </div>
+      ${statusHtml}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  CREATE QUIZ — STEP 1
+// ═══════════════════════════════════════
+function populateClassDropdown() {
+  const sel = document.getElementById('new-class');
+  sel.innerHTML = '<option value="">-- Select Class --</option>' +
+    state.classes.map(c=>`<option value="${c.id}">${c.name} — ${c.subject}</option>`).join('');
+}
+
+function loadClassSubjects() {
+  // Already combined, just update subject field
+  const sel = document.getElementById('new-class');
+  const cls = state.classes.find(c=>c.id===sel.value);
+  document.getElementById('new-subject').innerHTML = cls
+    ? `<option value="${cls.subject}">${cls.subject}</option>`
+    : '<option value="">-- Select Class First --</option>';
+}
+
+function proceedToStep2() {
+  const classId = document.getElementById('new-class').value;
+  const chapter = document.getElementById('new-chapter').value.trim();
+  const topic   = document.getElementById('new-topic').value.trim();
+  if (!classId) return toast('Please select a class!','error');
+  if (!chapter) return toast('Enter the chapter name!','error');
+  if (!topic)   return toast('Enter the topic!','error');
+
+  const cls = state.classes.find(c=>c.id===classId);
+  state.currentQuiz = { class_id:classId, chapter, topic, subject:cls.subject, className:cls.name };
+  state.pendingQuestions = [];
+
+  document.getElementById('step2-title').textContent = `${topic}`;
+  document.getElementById('step2-meta').textContent  = `${cls.name} · ${cls.subject} · ${chapter}`;
+  document.getElementById('ai-topic-display').textContent = topic;
+
+  setStep(2);
+  renderPendingQuestions();
+  renderSearchChips();
+  lastSearchTopic = '';
+  document.getElementById('topic-search').value = '';
+  document.getElementById('search-result-msg').style.display = 'none';
+}
+
+// ═══════════════════════════════════════
+//  CREATE QUIZ — STEP 2 (QUESTIONS)
+// ═══════════════════════════════════════
+function showAIGenerator() {
+  document.getElementById('ai-panel').classList.remove('hidden');
+  document.getElementById('manual-form').classList.add('hidden');
+  document.getElementById('upload-panel').classList.add('hidden');
+}
+function showAddForm() {
+  document.getElementById('manual-form').classList.remove('hidden');
+  document.getElementById('ai-panel').classList.add('hidden');
+  document.getElementById('upload-panel').classList.add('hidden');
+  // Clear form
+  document.getElementById('mq-text').value='';
+  ['0','1','2','3'].forEach(i=>document.getElementById('mq-opt-'+i).value='');
+  document.querySelectorAll('input[name=correct-opt]').forEach(r=>r.checked=false);
+}
+
+function addManualQuestion() {
+  const qtext = document.getElementById('mq-text').value.trim();
+  const opts = ['0','1','2','3'].map(i=>document.getElementById('mq-opt-'+i).value.trim());
+  const correctEl = document.querySelector('input[name=correct-opt]:checked');
+  if (!qtext) return toast('Enter the question text!','error');
+  if (opts.some(o=>!o)) return toast('Fill in all 4 options!','error');
+  if (!correctEl) return toast('Mark the correct answer!','error');
+
+  state.pendingQuestions.push({
+    question_text: qtext,
+    options: opts,
+    correct_index: parseInt(correctEl.value),
+    order_num: state.pendingQuestions.length
+  });
+  document.getElementById('manual-form').classList.add('hidden');
+  renderPendingQuestions();
+  toast('✅ Question added!','success');
+}
+
+// ═══════════════════════════════════════
+//  ⚡ SMART TOPIC SEARCH BAR
+// ═══════════════════════════════════════
+let searchDebounceTimer = null;
+let lastSearchTopic = '';
+
+// Subject-wise suggestion chips
+const TOPIC_CHIPS = {
+  'Science':     ['Photosynthesis','Newton\'s Laws','Acids & Bases','Human Heart','Periodic Table','Light Reflection'],
+  'Mathematics': ['Quadratic Equations','Trigonometry','Probability','Circles','Linear Equations','Polynomials'],
+  'Python / AI': ['Loops in Python','Lists & Tuples','Machine Learning Basics','Neural Networks','Functions','OOP'],
+  'default':     ['Cell Division','Chemical Bonding','Ecosystem','Gravitation','Electricity','Motion']
+};
+
+function onTopicSearchInput(val) {
+  const goBtn = document.getElementById('search-go-btn');
+  goBtn.style.display = val.trim().length > 2 ? 'block' : 'none';
+
+  // Debounce — auto trigger after 1.5s of no typing
+  clearTimeout(searchDebounceTimer);
+  if (val.trim().length > 4) {
+    searchDebounceTimer = setTimeout(() => triggerTopicSearch(), 1500);
+  }
+}
+
+function renderSearchChips() {
+  const subject = state.currentQuiz?.subject || 'default';
+  const chips = TOPIC_CHIPS[subject] || TOPIC_CHIPS['default'];
+  const container = document.getElementById('search-chips');
+  container.innerHTML = chips.map(c => `
+    <span onclick="useChip('${c}')" style="
+      font-size:0.75rem;padding:4px 10px;border-radius:20px;
+      background:var(--surface2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;transition:all 0.15s;
+      white-space:nowrap;
+    " onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"
+    >${c}</span>
+  `).join('');
+}
+
+function useChip(topic) {
+  document.getElementById('topic-search').value = topic;
+  document.getElementById('search-go-btn').style.display = 'block';
+  clearTimeout(searchDebounceTimer);
+  triggerTopicSearch();
+}
+
+async function triggerTopicSearch() {
+  const raw = document.getElementById('topic-search').value.trim();
+  if (!raw || raw.length < 3) return;
+  if (raw === lastSearchTopic) return; // Don't re-run same topic
+  lastSearchTopic = raw;
+
+  clearTimeout(searchDebounceTimer);
+
+  // Hide panels, show spinner
+  ['ai-panel','manual-form','upload-panel'].forEach(id =>
+    document.getElementById(id).classList.add('hidden')
+  );
+  document.getElementById('search-spinner').style.display = 'block';
+  document.getElementById('search-go-btn').style.display = 'none';
+
+  const msgEl = document.getElementById('search-result-msg');
+  msgEl.style.display = 'block';
+  msgEl.style.background = 'rgba(240,165,0,0.06)';
+  msgEl.style.color = 'var(--accent)';
+  msgEl.style.border = '1px solid rgba(240,165,0,0.2)';
+  msgEl.textContent = `⚡ Generating questions for "${raw}"…`;
+
+  const subject = state.currentQuiz?.subject || 'Science';
+  const chapter = state.currentQuiz?.chapter || '';
+
+  const prompt = `You are an expert teacher. Generate exactly 10 high-quality exam questions on:
+Topic: "${raw}"
+Subject: ${subject}
+Chapter context: ${chapter}
+Curriculum: Indian school (CBSE/ICSE/WBBSE)
+
+Mix of types: 6 Simple MCQ + 2 Assertion-Reason + 2 True/False
+
+Return ONLY a valid JSON array, no markdown, no explanation:
+[
+  {
+    "question_text": "...",
+    "type": "mcq",
+    "options": ["A","B","C","D"],
+    "correct_index": 0
+  }
+]
+
+Rules:
+- mcq: 4 options, 1 correct
+- assertion_reason: question starts with "Assertion (A):" and "Reason (R):". Options must be exactly: ["Both A and R are true, and R explains A", "Both A and R are true, but R does not explain A", "A is true but R is false", "A is false but R is true"]
+- true_false: options must be exactly: ["True", "False", "Cannot be determined", "Partially True"]
+- All factually accurate, exam-relevant`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw2  = data.content?.[0]?.text || '[]';
+    const clean = raw2.replace(/```json|```/g,'').trim();
+    const questions = JSON.parse(clean);
+
+    if (!questions.length) throw new Error('Empty response');
+
+    questions.forEach((q, i) => {
+      state.pendingQuestions.push({
+        question_text: q.question_text,
+        options: q.options,
+        correct_index: q.correct_index,
+        order_num: state.pendingQuestions.length + i
+      });
+    });
+
+    renderPendingQuestions();
+
+    // Success message
+    msgEl.style.background = 'rgba(63,185,80,0.08)';
+    msgEl.style.color = 'var(--success)';
+    msgEl.style.border = '1px solid rgba(63,185,80,0.25)';
+    msgEl.textContent = `✅ ${questions.length} questions added for "${raw}"`;
+    setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+
+    // Clear search bar for next topic
+    document.getElementById('topic-search').value = '';
+    lastSearchTopic = '';
+
+  } catch(e) {
+    console.error(e);
+    msgEl.style.background = 'rgba(248,81,73,0.08)';
+    msgEl.style.color = 'var(--danger)';
+    msgEl.style.border = '1px solid rgba(248,81,73,0.25)';
+    msgEl.textContent = '❌ Could not generate. Check connection or try again.';
+    lastSearchTopic = '';
+  } finally {
+    document.getElementById('search-spinner').style.display = 'none';
+    document.getElementById('search-go-btn').style.display =
+      document.getElementById('topic-search').value.trim().length > 2 ? 'block' : 'none';
+  }
+}
+
+// ═══════════════════════════════════════
+//  PDF / IMAGE UPLOAD & SCAN
+// ═══════════════════════════════════════
+let uploadedFileData = null; // { base64, mediaType, isPdf }
+
+function showUploadPanel() {
+  // unified bar handles this now - legacy stub
+  document.getElementById('ai-panel').classList.add('hidden');
+  document.getElementById('manual-form').classList.add('hidden');
+}
+function hideUploadPanel() {
+  clearUnifiedFile(); // legacy stub
+  clearFile();
+}
+
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { toast('File too large! Max 10MB.','error'); return; }
+
+  const isPdf = file.type === 'application/pdf';
+  const isImg = file.type.startsWith('image/');
+  if (!isPdf && !isImg) { toast('Only JPG, PNG, or PDF allowed!','error'); return; }
+
+  // Show preview
+  const preview = document.getElementById('file-preview');
+  document.getElementById('file-icon').textContent = isPdf ? '📄' : '🖼️';
+  document.getElementById('file-name').textContent = file.name;
+  document.getElementById('file-size').textContent = (file.size/1024).toFixed(1) + ' KB';
+  preview.style.display = 'flex';
+
+  // Drag zone feedback
+  document.getElementById('drop-zone').style.borderColor = 'var(--accent2)';
+  document.getElementById('drop-zone').style.background = 'rgba(86,203,163,0.05)';
+
+  // Read as base64
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const result = e.target.result;
+    const base64 = result.split(',')[1];
+    uploadedFileData = {
+      base64,
+      mediaType: file.type,
+      isPdf
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearFile() {
+  uploadedFileData = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('file-preview').style.display = 'none';
+  document.getElementById('drop-zone').style.borderColor = '';
+  document.getElementById('drop-zone').style.background = 'var(--surface3)';
+}
+
+// Unified file handler
+function handleFileSelectUnified(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { toast('File too large! Max 10MB.','error'); return; }
+  const isPdf = file.type === 'application/pdf';
+  const isImg = file.type.startsWith('image/');
+  if (!isPdf && !isImg) { toast('Only JPG, PNG, or PDF allowed!','error'); return; }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const base64 = e.target.result.split(',')[1];
+    uploadedFileData = { base64, mediaType: file.type, isPdf };
+    // Show badge + options
+    document.getElementById('unified-file-name').textContent = file.name;
+    document.getElementById('unified-file-badge').style.display = 'flex';
+    document.getElementById('unified-upload-options').style.display = 'block';
+    document.getElementById('search-go-btn').style.display = 'none';
+    toast('📄 File ready! Configure options and scan.','success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearUnifiedFile() {
+  uploadedFileData = null;
+  document.getElementById('file-input-unified').value = '';
+  document.getElementById('unified-file-badge').style.display = 'none';
+  document.getElementById('unified-upload-options').style.display = 'none';
+  const val = document.getElementById('topic-search').value.trim();
+  if (val.length > 2) document.getElementById('search-go-btn').style.display = 'block';
+}
+
+// Drag & drop support
+window.addEventListener('DOMContentLoaded', () => {
+  const dz = document.getElementById('drop-zone');
+  if (!dz) return;
+  dz.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dz.style.borderColor = 'var(--accent)';
+    dz.style.background = 'rgba(240,165,0,0.05)';
+  });
+  dz.addEventListener('dragleave', () => {
+    dz.style.borderColor = '';
+    dz.style.background = 'var(--surface3)';
+  });
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      document.getElementById('file-input').files = dt.files;
+      handleFileSelect(document.getElementById('file-input'));
+    }
+  });
+});
+
+async function generateFromUpload() {
+  if (!uploadedFileData) { toast('Please upload a file first!','error'); return; }
+
+  const count      = document.getElementById('upload-count').value;
+  const difficulty = document.getElementById('upload-difficulty').value;
+  const wantMCQ    = document.getElementById('qt-mcq').checked;
+  const wantAR     = document.getElementById('qt-ar').checked;
+  const wantTF     = document.getElementById('qt-tf').checked;
+
+  if (!wantMCQ && !wantAR && !wantTF) { toast('Select at least one question type!','error'); return; }
+
+  const types = [];
+  if (wantMCQ) types.push('Simple MCQ (4 options, 1 correct)');
+  if (wantAR)  types.push('Assertion-Reason (options: Both A&R true R explains A / Both true R doesn\'t explain / A true R false / A false R true)');
+  if (wantTF)  types.push('True/False (options: True, False, Cannot be determined, Partially True)');
+
+  const topic   = state.currentQuiz.topic;
+  const subject = state.currentQuiz.subject;
+
+  // Show loading
+  document.getElementById('upload-loading').style.display = 'block';
+  document.querySelector('#unified-upload-options button').style.display = 'none';
+
+  const statusEl = document.getElementById('upload-status-text');
+  const statusMsgs = [
+    'Reading your file...',
+    'Analyzing content...',
+    'Identifying key concepts...',
+    'Generating questions...'
+  ];
+  let msgIdx = 0;
+  const msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % statusMsgs.length;
+    statusEl.innerHTML = statusMsgs[msgIdx] + '<br><span style="font-size:0.78rem;color:var(--muted);">This may take 15-30 seconds for PDFs</span>';
+  }, 3000);
+
+  try {
+    const prompt = `You are an expert teacher creating exam questions for Indian school students.
+Analyze the provided ${uploadedFileData.isPdf ? 'PDF document' : 'image'} carefully and generate exactly ${count} questions on the topic: "${topic}" (Subject: ${subject}).
+
+Difficulty: ${difficulty}
+
+Question types to include (mix them): ${types.join(', ')}
+
+STRICT JSON FORMAT — Return ONLY a JSON array, no explanation, no markdown backticks:
+[
+  {
+    "question_text": "Full question text here",
+    "type": "mcq",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correct_index": 0
+  }
+]
+
+Rules:
+- "type" must be one of: "mcq", "assertion_reason", "true_false"
+- For assertion_reason: options must be exactly ["Both A and R are true, and R explains A", "Both A and R are true, but R does not explain A", "A is true but R is false", "A is false but R is true"]
+- For true_false: options must be exactly ["True", "False", "Cannot be determined", "Partially True"]
+- For mcq: 4 clear options, 1 correct
+- All questions must be DIRECTLY based on the content in the uploaded file
+- correct_index is 0-based
+- Questions must follow CBSE/ICSE/WBBSE exam pattern`;
+
+    // Build content array for API
+    const contentArr = [];
+
+    if (uploadedFileData.isPdf) {
+      contentArr.push({
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: 'application/pdf',
+          data: uploadedFileData.base64
+        }
+      });
+    } else {
+      contentArr.push({
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: uploadedFileData.mediaType,
+          data: uploadedFileData.base64
+        }
+      });
+    }
+    contentArr.push({ type: 'text', text: prompt });
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: contentArr }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw   = data.content?.[0]?.text || '[]';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const questions = JSON.parse(clean);
+
+    if (!questions.length) throw new Error('No questions returned');
+
+    questions.forEach((q, i) => {
+      state.pendingQuestions.push({
+        question_text: q.question_text,
+        options: q.options,
+        correct_index: q.correct_index,
+        order_num: state.pendingQuestions.length + i
+      });
+    });
+
+    clearUnifiedFile();
+    renderPendingQuestions();
+    toast(`✅ ${questions.length} questions generated from your file!`, 'success');
+
+  } catch(e) {
+    console.error(e);
+    toast('Error scanning file. Try a clearer image or smaller PDF.', 'error');
+  } finally {
+    clearInterval(msgInterval);
+    document.getElementById('upload-loading').style.display = 'none';
+    document.querySelector('#unified-upload-options button').style.display = 'block';
+  }
+}
+
+async function generateAIQuestions() {
+  const count = document.getElementById('ai-count').value;
+  const diff  = document.getElementById('ai-difficulty').value;
+  const topic = state.currentQuiz.topic;
+  const subject = state.currentQuiz.subject;
+
+  document.getElementById('ai-loading').classList.remove('hidden');
+  document.getElementById('ai-panel').querySelector('.btn-primary').disabled = true;
+
+  try {
+    const prompt = `Generate exactly ${count} multiple choice questions for a Class quiz on the topic: "${topic}" (Subject: ${subject}).
+Difficulty: ${diff}.
+Return ONLY a JSON array, no explanation, no markdown.
+Format:
+[
+  {
+    "question_text": "Question here?",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correct_index": 0
+  }
+]
+correct_index is 0-based (0=A, 1=B, 2=C, 3=D).
+Make sure all questions are factually correct and relevant to the Indian school curriculum (CBSE/ICSE/WBBSE).`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await response.json();
+    const raw = data.content?.[0]?.text || '[]';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const questions = JSON.parse(clean);
+
+    questions.forEach((q,i) => {
+      state.pendingQuestions.push({
+        question_text: q.question_text,
+        options: q.options,
+        correct_index: q.correct_index,
+        order_num: state.pendingQuestions.length + i
+      });
+    });
+
+    document.getElementById('ai-panel').classList.add('hidden');
+    renderPendingQuestions();
+    toast(`🤖 ${questions.length} questions generated!`,'success');
+  } catch(e) {
+    toast('AI error. Please add questions manually.','error');
+    console.error(e);
+  } finally {
+    document.getElementById('ai-loading').classList.add('hidden');
+    document.getElementById('ai-panel').querySelector('.btn-primary').disabled = false;
+  }
+}
+
+function renderPendingQuestions() {
+  const container = document.getElementById('questions-preview');
+  const procBtn = document.getElementById('btn-proceed-step3');
+
+  if (!state.pendingQuestions.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">❓</div><div class="empty-text">No questions yet.<br>Use AI to generate or add manually.</div></div>`;
+    procBtn.disabled = true;
+    return;
+  }
+
+  procBtn.disabled = false;
+  container.innerHTML = state.pendingQuestions.map((q,i) => {
+    const optLabels = ['A','B','C','D'];
+    const optsHtml = q.options.map((o,oi) =>
+      `<div class="q-opt ${oi===q.correct_index?'correct':''}">
+        <span class="opt-badge">${optLabels[oi]}</span>${o}
+      </div>`
+    ).join('');
+    return `
+    <div class="q-card">
+      <div class="q-num">Q${i+1}</div>
+      <div class="q-text">${q.question_text}</div>
+      <div class="q-opts">${optsHtml}</div>
+      <div class="q-card-actions">
+        <button class="btn btn-danger btn-icon btn-sm" onclick="deleteQuestion(${i})" title="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteQuestion(idx) {
+  state.pendingQuestions.splice(idx,1);
+  state.pendingQuestions.forEach((q,i)=>q.order_num=i);
+  renderPendingQuestions();
+  toast('Question removed','');
+}
+
+// ═══════════════════════════════════════
+//  CREATE QUIZ — STEP 3 (GO LIVE)
+// ═══════════════════════════════════════
+function proceedToStep3() {
+  const q = state.currentQuiz;
+  document.getElementById('step3-title').textContent = q.topic;
+  document.getElementById('step3-meta').textContent  = `${q.className} · ${q.subject} · ${q.chapter}`;
+  document.getElementById('s3-class').textContent   = q.className;
+  document.getElementById('s3-qs').textContent      = state.pendingQuestions.length;
+  document.getElementById('s3-subject').textContent = q.subject;
+  setStep(3);
+}
+
+async function goLive() {
+  try {
+    // First end any existing live quiz
+    const existingLive = state.quizzes.find(q=>q.is_live);
+    if (existingLive) {
+      await sb.patch('quizzes', existingLive.id, {is_live:false});
+    }
+
+    // Create quiz
+    const quizRes = await sb.post('quizzes',{
+      class_id: state.currentQuiz.class_id,
+      topic: state.currentQuiz.topic,
+      chapter: state.currentQuiz.chapter,
+      is_live: true
+    });
+
+    if (!quizRes || !quizRes[0]) return toast('Quiz could not be saved. Check Supabase connection.','error');
+    const quizId = quizRes[0].id;
+
+    // Save all questions
+    const qsToSave = state.pendingQuestions.map(q=>({...q, quiz_id:quizId}));
+    await sb.post('questions', qsToSave);
+
+    toast('🚀 Quiz is LIVE! Students can join now!','success');
+
+    // Reset and go to dashboard
+    state.currentQuiz = null;
+    state.pendingQuestions = [];
+    setStep(1);
+    document.getElementById('new-class').value='';
+    document.getElementById('new-subject').innerHTML='<option value="">-- Select Subject --</option>';
+    document.getElementById('new-chapter').value='';
+    document.getElementById('new-topic').value='';
+
+    await loadQuizzes();
+
+    // Switch to quizzes tab
+    document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelector('.dash-tab').classList.add('active');
+    switchTab('quizzes', document.querySelector('.dash-tab'));
+
+  } catch(e) {
+    toast('Error: '+e.message,'error');
+    console.error(e);
+  }
+}
+
+async function endLiveQuiz() {
+  if (!state.liveQuizId) return;
+  if (!confirm('Are you sure you want to end this quiz?')) return;
+  await sb.patch('quizzes', state.liveQuizId, {is_live:false});
+  toast('Quiz ended.','');
+  await loadQuizzes();
+}
+
+// ═══════════════════════════════════════
+//  QUIZ DETAIL
+// ═══════════════════════════════════════
+async function openQuizDetail(quizId) {
+  const quiz = state.quizzes.find(q=>q.id===quizId);
+  if (!quiz) return;
+  state.detailQuizId = quizId;
+
+  const cls = state.classes.find(c=>c.id===quiz.class_id);
+  document.getElementById('detail-title').textContent = quiz.topic;
+  document.getElementById('detail-meta').textContent =
+    `${cls?.name||''} · ${cls?.subject||''} · ${quiz.chapter}`;
+
+  // Status
+  document.getElementById('detail-status').innerHTML = quiz.is_live
+    ? `<span class="status-badge status-live"><span class="live-dot"></span>LIVE</span>`
+    : `<span class="status-badge status-draft">DRAFT</span>`;
+
+  document.getElementById('detail-live-actions').classList.toggle('hidden', !quiz.is_live);
+  document.getElementById('detail-draft-actions').classList.toggle('hidden', quiz.is_live);
+
+  // Load questions
+  const questions = await sb.get('questions',`?quiz_id=eq.${quizId}&order=order_num.asc`);
+  const optLabels=['A','B','C','D'];
+  document.getElementById('detail-questions-list').innerHTML = !questions.length
+    ? `<div class="empty-state"><div class="empty-icon">❓</div><div class="empty-text">Is quiz mein koi question nahi hai.</div></div>`
+    : questions.map((q,i)=>{
+        const optsHtml = (q.options||[]).map((o,oi)=>
+          `<div class="q-opt ${oi===q.correct_index?'correct':''}">
+            <span class="opt-badge">${optLabels[oi]}</span>${o}
+          </div>`
+        ).join('');
+        return `<div class="q-card">
+          <div class="q-num">Q${i+1}</div>
+          <div class="q-text">${q.question_text}</div>
+          <div class="q-opts">${optsHtml}</div>
+        </div>`;
+      }).join('');
+
+  show('screen-quiz-detail');
+}
+
+async function makeQuizLive() {
+  // End any existing live quiz first
+  const existingLive = state.quizzes.find(q=>q.is_live);
+  if (existingLive && existingLive.id !== state.detailQuizId) {
+    await sb.patch('quizzes', existingLive.id, {is_live:false});
+  }
+  await sb.patch('quizzes', state.detailQuizId, {is_live:true});
+  toast('🚀 Quiz is LIVE!','success');
+  await loadQuizzes();
+  backToDashboard();
+}
+
+function backToDashboard() {
+  show('screen-dashboard');
+  loadQuizzes();
+}
+
+// ═══════════════════════════════════════
+//  CLASSES TAB
+// ═══════════════════════════════════════
+function loadClassesTab() {
+  const list = document.getElementById('classes-list');
+  if (!state.classes.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🏫</div><div class="empty-text">Koi class nahi hai.</div></div>`;
+    return;
+  }
+  list.innerHTML = state.classes.map(c=>`
+    <div class="quiz-list-item" style="cursor:default;">
+      <div style="font-size:1.4rem;">🏫</div>
+      <div class="qli-info">
+        <div class="qli-title">${c.name}</div>
+        <div class="qli-meta">Subject: ${c.subject}</div>
+      </div>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteClass('${c.id}')" title="Delete">🗑</button>
+    </div>`).join('');
+}
+
+async function addClass() {
+  const name    = document.getElementById('new-class-name').value.trim();
+  const subject = document.getElementById('new-class-subject').value.trim();
+  if (!name || !subject) return toast('Enter both class name and subject!','error');
+  try {
+    const res = await sb.post('classes',{name, subject, is_active:true});
+    if (res && res.error) throw new Error(res.error.message || 'Save failed');
+    document.getElementById('new-class-name').value='';
+    document.getElementById('new-class-subject').value='';
+    await loadClasses();
+    loadClassesTab();
+    populateClassDropdown();
+    toast('✅ Class added!','success');
+  } catch(e) {
+    toast('Error: ' + e.message,'error');
+    console.error(e);
+  }
+}
+
+async function deleteClass(id) {
+  if (!confirm('Delete this class?')) return;
+  await sb.delete('classes',id);
+  await loadClasses();
+  loadClassesTab();
+  populateClassDropdown();
+  toast('Class deleted.','');
+}
+
+// ═══════════════════════════════════════
+//  STEP CONTROL
+// ═══════════════════════════════════════
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('create-step-'+i).classList.toggle('hidden', i!==n);
+    const el = document.getElementById('step-'+i);
+    el.classList.remove('active','done');
+    if(i===n) el.classList.add('active');
+    if(i<n)   el.classList.add('done');
+  });
+}
+function backToStep1(){ setStep(1); }
+function backToStep2(){ setStep(2); }
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+let toastTimer;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (type?' '+type:'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+// Check if Supabase key is configured
+window.addEventListener('load', () => {
+  if (SUPABASE_KEY === 'YOUR_ANON_KEY_HERE') {
+    // Show config warning in PIN screen
+    const note = document.createElement('div');
+    note.className = 'config-note';
+    note.style.marginTop = '16px';
+    note.innerHTML = `<strong>⚠️ Setup Required:</strong> <code>SUPABASE_KEY</code> is still a placeholder. Paste your actual anon key in the HTML file.`;
+    document.getElementById('screen-pin').appendChild(note);
+  }
+});
+</script>
+</body>
+</html>
